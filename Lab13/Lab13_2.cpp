@@ -4,43 +4,77 @@
 template <typename ForwardIterator, typename Compare>
 
 void bubble_sort(ForwardIterator first, ForwardIterator last, Compare comp) {
-	if (comp == '<') {
-		while (last == first) {
-			if(*)
-			last--;
+	// tempFirst ë¹„êµí•  ì•ì˜ ì›ì†Œ, tempSecond ë¹„êµí•  ë’¤ì˜ ì›ì†Œ, num ë¦¬ìŠ¤íŠ¸ì˜ ê¸¸ì´
+	auto tempFirst = first;
+	auto tempSecond = first;
+	int size = 0;
+	
+	// listì˜ ê¸¸ì´ë¥¼ ì¸¡ì •í•œë‹¤.
+	while (tempFirst != last) {
+		size++;
+		tempFirst++;
+	}
+	// ì²« ë¹„êµë¥¼ num-1íšŒ í•˜ë¯€ë¡œ 1ì„ ëºë‹¤.
+	size--;
+
+	for (int i = 0; i < size; i++) {
+		tempFirst = first;
+		tempSecond = first;
+		tempSecond++;
+		for (int j = 0; j < size - i; j++) {
+			int x = *tempFirst, y = *tempSecond;
+			// compê°€ ì˜¤ë¦„ì°¨ìˆœì¼ ê²½ìš° ì•ì˜ ìˆ«ìê°€ ì»¤ì„œ, ë‚´ë¦¼ì°¨ìˆœì¼ ê²½ìš° ì•ì˜ ìˆ«ìê°€ ì‘ì•„ì„œ
+			// trueê°€ returnë˜ê³ , trueì¼ ê²½ìš° iteratorë“¤ì„ swap ì‹œì¼œì¤€ë‹¤.
+			if (comp(x, y)) {
+				std::iter_swap(tempFirst, tempSecond);
+			}
+			tempFirst++;
+			tempSecond++;
 		}
 	}
 }
 
-class compGreater { // ¿À¸§Â÷¼ø Á¤·Ä¿¡ »ç¿ë
+class CompGreater { 
+// ì•ì˜ ì¸ìê°€ í¬ë©´ true, ì‘ìœ¼ë©´ falseë¥¼ returní•œë‹¤.
+// ì˜¤ë¦„ì°¨ìˆœ ì •ë ¬ì„ í•  ë•Œ ì‚¬ìš©í•œë‹¤.
 public:
-	compGreater(int threshold) : threshold_(threshold) {}
-	bool operator()(int x) const {
-		return x > threshold_;
+	bool operator()(int x, int y) {
+		return x > y;
 	}
-private:
-	int threshold_;
+
 };
 
-class compLess { // ³»¸²Â÷¼ø Á¤·Ä¿¡ »ç¿ë
+class CompLess { 
+// ì•ì˜ ì¸ìê°€ ì‘ìœ¼ë©´ true, í¬ë©´ falseë¥¼ returní•œë‹¤.
+// ë‚´ë¦¼ì°¨ìˆœ ì •ë ¬ì„ í•  ë•Œ ì‚¬ìš©í•œë‹¤.
 public:
-	compLess(int threshold) : threshold_(threshold) {}
-	bool operator()(int x) const {
-		return x < threshold_;
+	bool operator()(int x, int y) {
+		return x < y;
 	}
-private:
-	int threshold_;
 };
 
 int main() {
 	std::forward_list<int> values{ 7, 0, 6, 1, 5, 2, 4, 3 };
-	std::cout << "¿À¸§Â÷¼ø Á¤·Ä" << std::endl;
-	bubble_sort(values.begin(), values.end(), '>');
-	// bubble sort »ç¿ëÇÏ¿© ¿À¸§Â÷¼ø Á¤·Ä ÈÄ °á°ú Ãâ·Â
+	
+	std::cout << "ì˜¤ë¦„ì°¨ìˆœ ì •ë ¬" << std::endl;
+	CompGreater compGreater;
+	// bubble sortë¥¼ ì‚¬ìš©í•˜ì—¬ ì˜¤ë¦„ì°¨ìˆœ ì •ë ¬ì„ ì‹¤í–‰í•œë‹¤.
+	bubble_sort(values.begin(), values.end(), compGreater);
+	//ì •ë ¬ëœ ë¦¬ìŠ¤íŠ¸ë¥¼ ì¶œë ¥í•œë‹¤.
+	for (auto it = values.begin(); it != values.end(); it++) {
+		std::cout << *it << " ";
+	}
 	std::cout << std::endl;
-	std::cout << "³»¸²Â÷¼ø Á¤·Ä" << std::endl;
-	bubble_sort(values.begin(), values.end(), '<');
-	// bubble sort »ç¿ëÇÏ¿© ³»¸²Â÷¼ø Á¤·Ä ÈÄ °á°ú Ãâ·Â
+	
+	std::cout << "ë‚´ë¦¼ì°¨ìˆœ ì •ë ¬" << std::endl;
+	CompLess compLess;
+	// bubble sortë¥¼ ì‚¬ìš©í•˜ì—¬ ë‚´ë¦¼ì°¨ìˆœ ì •ë ¬ì„ ì‹¤í–‰í•œë‹¤.
+	bubble_sort(values.begin(), values.end(), compLess);
+	// ì •ë ¬ëœ ë¦¬ìŠ¤íŠ¸ë¥¼ ì¶œë ¥í•œë‹¤.
+	for (auto it = values.begin(); it != values.end(); it++) {
+		std::cout << *it << " ";
+	}
 	std::cout << std::endl;
+
 	return 0;
 }
